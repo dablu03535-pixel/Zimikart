@@ -1,0 +1,16 @@
+node_modules
+dist
+dist-ssr
+build
+coverage
+*.local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+.DS_Store
+*.log
+.vscode/*
+!.vscode/extensions.json

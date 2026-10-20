@@ -1,0 +1,40 @@
+/** Single source of truth for every URL in the app. */
+export const PATHS = {
+  home: '/',
+  shop: '/shop',
+  category: '/category/:slug',
+  search: '/search',
+  product: '/product/:slug',
+  cart: '/cart',
+  wishlist: '/wishlist',
+  login: '/login',
+  register: '/register',
+  forgotPassword: '/forgot-password',
+  account: '/account',
+  addresses: '/account/addresses',
+  orders: '/account/orders',
+  order: '/account/orders/:id',
+  sellerRegister: '/seller/register',
+  sellerDashboard: '/seller/dashboard',
+  sellerProducts: '/seller/products',
+  sellerOrders: '/seller/orders',
+  sellerEarnings: '/seller/earnings',
+  adminLogin: '/admin/login',
+  adminDashboard: '/admin/dashboard',
+  adminSellers: '/admin/sellers',
+  adminProducts: '/admin/products',
+  adminOrders: '/admin/orders',
+  about: '/about',
+  contact: '/contact',
+  faq: '/faq',
+  privacy: '/privacy',
+  terms: '/terms',
+} as const;
+
+/** Builders for parameterised URLs. */
+export const to = {
+  category: (slug: string) => `/category/${encodeURIComponent(slug)}`,
+  product: (slug: string) => `/product/${encodeURIComponent(slug)}`,
+  order: (id: string) => `/account/orders/${encodeURIComponent(id)}`,
+  search: (q: string) => `/search?q=${encodeURIComponent(q)}`,
+} as const;

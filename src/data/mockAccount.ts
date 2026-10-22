@@ -56,7 +56,7 @@ export const moderationQueue: ModerationItem[] = [
 ];
 
 export const platformSettings: PlatformSettings = {
-  platformName: 'Avani Marketplace',
+  platformName: 'Zimikart',
   supportEmail: 'support@your-domain.example',
   defaultCommission: 12,
   freeShippingThreshold: 999,

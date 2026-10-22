@@ -1,7 +1,7 @@
-# Avani Marketplace: Stage 1 frontend
+# Zimikart: Stage 1 frontend
 
 Mobile-first multi-vendor marketplace UI built with **React + TypeScript + Vite + Tailwind CSS 3 + React Router**.
-"Avani Marketplace" is a **provisional name**: change `VITE_BRAND_NAME` in `.env`.
+"Zimikart" is a **provisional name**: change `VITE_BRAND_NAME` in `.env`.
 
 > **This is a frontend prototype running on mock data.** There is no backend, database, authentication, payment, seller verification or settlement. Screens that would need those only validate input and say clearly that nothing was sent. Seller and admin routes are **not secured**.
 
@@ -11,7 +11,7 @@ Mobile-first multi-vendor marketplace UI built with **React + TypeScript + Vite 
 pkg update && pkg upgrade -y
 pkg install -y nodejs-lts git unzip
 cd ~
-unzip avani-marketplace.zip && cd avani-marketplace   # or: git clone <your-repo-url> && cd <folder>
+unzip zimikart.zip && cd zimikart   # or: git clone <your-repo-url> && cd <folder>
 cp .env.example .env
 npm install
 npm run dev

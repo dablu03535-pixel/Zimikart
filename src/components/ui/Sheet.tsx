@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 
 interface SheetProps {
@@ -50,8 +51,8 @@ export function Sheet({ open, onClose, title, side = 'left', children }: SheetPr
 
   if (!open) return null;
   const position = side === 'left' ? 'left-0 top-0 h-full w-[85%] max-w-sm' : 'bottom-0 left-0 right-0 max-h-[88vh] rounded-t-3xl';
-  return (
-    <div className="fixed inset-0 z-50">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999]">
       <div className="absolute inset-0 bg-ink/50" onClick={onClose} aria-hidden="true" />
       <div ref={panelRef} role="dialog" aria-modal="true" aria-label={title} className={`absolute flex flex-col bg-cream shadow-2xl ${position}`}>
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
@@ -62,6 +63,7 @@ export function Sheet({ open, onClose, title, side = 'left', children }: SheetPr
         </div>
         <div className="flex-1 overflow-y-auto p-4">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MAX_QTY_PER_LINE } from '@/config/commerce';
-import { PATHS, to } from '@/config/routes';
+import { PATHS } from '@/config/routes';
 import { useCommerce } from '@/context/CommerceContext';
 import { useAsync } from '@/hooks/useAsync';
 import { usePageTitle } from '@/hooks/usePageTitle';
@@ -104,7 +104,7 @@ function Gallery({ hue, name }: { hue: number; name: string }) {
         </div>
       </div>
 
-      <ul className="mt-3 grid grid-cols-4 gap-3">
+      <ul className="mt-3 flex flex-wrap justify-center gap-2">
         {[0, 1, 2, 3].map(i => (
           <li key={i}>
             <button
@@ -115,7 +115,7 @@ function Gallery({ hue, name }: { hue: number; name: string }) {
                 setActive(i);
                 setDragOffset(0);
               }}
-              className={`block aspect-square w-full overflow-hidden rounded-xl border-2 ${active === i ? 'border-ink' : 'border-transparent'}`}
+              className={`block aspect-square w-full max-w-12 mx-auto overflow-hidden rounded-lg border-2 ${active === i ? 'border-ink' : 'border-transparent'}`}
             >
               <ProductArt hue={hue} variant={i} label="" />
             </button>
@@ -160,13 +160,7 @@ function ProductView({ detail }: { detail: ProductDetail }) {
 
   return (
     <div className="container-page py-6 sm:py-10">
-      <nav aria-label="Breadcrumb" className="mb-4 text-sm text-ink-mute">
-        <ol className="flex flex-wrap items-center gap-1">
-          <li><Link className="hover:underline" to={PATHS.shop}>Shop</Link></li>
-          <li aria-hidden="true">/</li>
-          <li><Link className="hover:underline" to={to.category(product.categorySlug)}>{product.categorySlug.replace(/-/g, ' ')}</Link></li>
-        </ol>
-      </nav>
+
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <Gallery hue={product.hue} name={product.name} />
         <div className="space-y-5">

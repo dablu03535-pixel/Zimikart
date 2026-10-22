@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MAX_QTY_PER_LINE } from '@/config/commerce';
 import { PATHS, to } from '@/config/routes';
@@ -18,19 +18,113 @@ import { NotFoundContent } from './NotFoundPage';
 
 function Gallery({ hue, name }: { hue: number; name: string }) {
   const [active, setActive] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const startX = useRef(0);
+  const lastX = useRef(0);
+
+  const beginDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    startX.current = e.clientX;
+    lastX.current = e.clientX;
+    setDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const moveDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const delta = e.clientX - startX.current;
+    lastX.current = e.clientX;
+    const width = viewportRef.current?.clientWidth || 1;
+    let offset = delta;
+
+    if ((active === 0 && delta > 0) || (active === 3 && delta < 0)) {
+      offset *= 0.25;
+    }
+
+    setDragOffset(Math.max(-width, Math.min(width, offset)));
+  };
+
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const delta = lastX.current - startX.current;
+    const width = viewportRef.current?.clientWidth || 1;
+
+    if (Math.abs(delta) >= width * 0.15) {
+      setActive(current =>
+        Math.max(0, Math.min(3, current + (delta < 0 ? 1 : -1)))
+      );
+    }
+
+    setDragOffset(0);
+    setDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+        // Pointer capture may be unavailable in some browsers.
+      }
+  };
+
   return (
     <div>
-      <div className="card aspect-square overflow-hidden"><ProductArt hue={hue} variant={active} label={`${name}: illustrative image ${active + 1} of 4`} /></div>
+      <div
+        ref={viewportRef}
+        className="card aspect-square overflow-hidden touch-pan-y select-none"
+        onPointerDown={beginDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onLostPointerCapture={() => {
+          if (dragging) {
+            setDragOffset(0);
+            setDragging(false);
+          }
+        }}
+        onDragStart={e => e.preventDefault()}
+        style={{ cursor: dragging ? 'grabbing' : 'grab' }}
+        aria-label="Product image gallery. Swipe left or right to view images."
+      >
+        <div
+          className={`flex h-full w-full ${dragging ? 'transition-none' : 'transition-transform duration-300 ease-out'}`}
+          style={{
+            width: '400%',
+            transform: `translate3d(calc(${-active * 25}% + ${dragOffset}px), 0, 0)`,
+          }}
+        >
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="h-full w-1/4 shrink-0 overflow-hidden">
+              <ProductArt
+                hue={hue}
+                variant={i}
+                label={`${name}: illustrative image ${i + 1} of 4`}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <ul className="mt-3 grid grid-cols-4 gap-3">
-        {[0, 1, 2, 3].map((i) => (
+        {[0, 1, 2, 3].map(i => (
           <li key={i}>
-            <button type="button" aria-pressed={active === i} aria-label={`Show image ${i + 1} of 4`} onClick={() => setActive(i)} className={`block aspect-square w-full overflow-hidden rounded-xl border-2 ${active === i ? 'border-ink' : 'border-transparent'}`}>
+            <button
+              type="button"
+              aria-pressed={active === i}
+              aria-label={`Show image ${i + 1} of 4`}
+              onClick={() => {
+                setActive(i);
+                setDragOffset(0);
+              }}
+              className={`block aspect-square w-full overflow-hidden rounded-xl border-2 ${active === i ? 'border-ink' : 'border-transparent'}`}
+            >
               <ProductArt hue={hue} variant={i} label="" />
             </button>
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-xs text-ink-mute">Illustrative artwork. Real product photos will come from seller uploads.</p>
+      <p className="mt-2 text-xs text-ink-mute">
+        Illustrative artwork. Real product photos will come from seller uploads.
+      </p>
     </div>
   );
 }

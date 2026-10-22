@@ -41,7 +41,7 @@ function Header({ categories }: { categories: Category[] }) {
   const navLink = ({ isActive }: { isActive: boolean }) => `whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ${isActive ? 'bg-ink text-cream' : 'text-ink-soft hover:bg-cream-deep'}`;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-cream/95 backdrop-blur">
+    <header className="relative border-b border-line bg-cream/95 backdrop-blur md:sticky md:top-0 md:z-40">
       <p className="bg-ink px-4 py-1.5 text-center text-xs text-cream">Demo storefront: sample products only. No real orders or payments.</p>
       <div className="container-page">
         <div className="flex items-center gap-2 py-2 sm:gap-4">
@@ -57,7 +57,7 @@ function Header({ categories }: { categories: Category[] }) {
             <Link to={PATHS.account} className={`${iconLink} hidden sm:flex`} aria-label="Account"><Icon name="user" /></Link>
           </nav>
         </div>
-        <SearchBar className="pb-2 md:hidden" />
+
         <nav aria-label="Categories" className="hidden gap-1 overflow-x-auto pb-2 lg:flex">
           <NavLink to={PATHS.shop} end className={navLink}>All products</NavLink>
           {categories.map((c) => (<NavLink key={c.id} to={to.category(c.slug)} className={navLink}>{c.name}</NavLink>))}
@@ -140,6 +140,11 @@ export function SiteLayout() {
     <div className="flex min-h-screen flex-col">
       <a href="#main" className="sr-only z-50 rounded-lg bg-white px-4 py-2 font-semibold focus:not-sr-only focus:fixed focus:left-2 focus:top-2">Skip to main content</a>
       <Header categories={categories} />
+      <div className="before-amazon-header-search sticky top-0 z-40 border-b border-line bg-cream/95 backdrop-blur md:hidden">
+        <div className="container-page">
+          <SearchBar className="py-2" />
+        </div>
+      </div>
       <main id="main" tabIndex={-1} className="flex-1 pb-24 outline-none md:pb-0"><Outlet /></main>
       <Footer categories={categories} />
       <BottomNav />
